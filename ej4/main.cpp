@@ -9,20 +9,16 @@ using namespace std;
 
 int main(int argc , char *argv[])
 {
-    ifstream file("inputs/ejemplo4.txt"); string str;
+    ///    ETAPA 1, CARGO LOS DATOS
+    ifstream file("inputs/ejemplo3.txt"); string str;
     int cantidadMatrices; int longitudIntervalo;int longitudArbol;
     vector<int> inputValues; int value;
     Matriz target; Matriz *inputs; Matriz *Arbol;
-    //
-    // CARGO LOS DATOS
-    //
     file >> cantidadMatrices;
-    longitudArbol = (proximoCuadrado(cantidadMatrices)*2)-1;
     file >> longitudIntervalo; longitudIntervalo = longitudIntervalo - 1;
 
     inputs = new Matriz[cantidadMatrices];
-    Arbol =  new Matriz[longitudArbol];
-    //defino target
+
     for(int x = 0; x < 9; x++){
         file >> value;
         inputValues.push_back(value);
@@ -39,40 +35,28 @@ int main(int argc , char *argv[])
         inputs[x] = Matriz(inputValues);
     }
 
+    /// ETAPA 2, CREO EL ARBOL Y LO POBLO CON LA INFORMACION QUE TENEMOS
+    longitudArbol = (proximoCuadrado(cantidadMatrices)*2)-1;
+    Arbol =  new Matriz[longitudArbol];
     poblarArbol(id(), Arbol, longitudArbol, inputs, cantidadMatrices);
 
+
+    /// ETAPA 3, PARA TODOS LOS INTERVALOS QUE ESTAN DENTRO DE LOS DATOS QUE SUBIMOS, CALCULAMOS LA MULTIPLICACION Y NOS FIJAMOS SI ES TARGET
     bool found = false;
 
     for(int x=longitudIntervalo; x < cantidadMatrices; x++){
-        found = found or (resolverConjunto(id(),Arbol,longitudArbol,x-longitudIntervalo,x)==target);
-        //cout << endl<< "Intervalo:" << x-longitudIntervalo << "[]" << x << endl;
+        found = found or (
+                resolverConjunto(id(),Arbol,longitudArbol,x-longitudIntervalo,x)==target
+                );
     }
 
-    cout << endl << "Estaba:" << found << endl;
+    /// ETAPA 4, EXITO
+
+    if(found) cout << "SI" << endl;
+    if(!found) cout << "NO" << endl;
 
     delete [] inputs;
     delete [] Arbol;
-    //for (int i=0; i<inputValues.size();i++){
-    //    cout << inputValues[i] << endl;
-    //}
-
-    //cout << inputValues;
-    //cout << cantidadMatrices;
-
-    //cout << endl << "@@@" << endl;
-    //cout << "hola"[1] << endl;
-    /*
-
-    istream_iterator<double> start(is), end;
-    vector<double> numbers(start, end);
-    cout << "Read " << numbers.size() << " numbers" << endl;*/
-
-    //while (getline(file, str))
-    //while ( a)
-    //{
-     //   cout << a << endl;// Process str
-    //}
 
     return 0;
-
 }
