@@ -1,26 +1,42 @@
 #include <iostream>
-#include <string>
 #include <algorithm>
 
 using namespace std;
 
-int main(int argc, char const *argv[]) {
+int main() {
+  // Obtengo N
   int N;
   cin >> N;
-  int arreglo[N];
-  int sumas[N];
+
+  // Creo dos arreglos de int:
+  // "A" que va a guardar los A_i que vienen del input
+  // "sumaMax" que va a guardar en la posicion "i" la suma del subarreglo de suma maxima considerando A[0, i]
+  int A[N];
+  int sumaMax[N];
+
+  // Relleno A con los valores del input
   for(int i = 0; i < N; i++) {
-    cin >> arreglo[i];
-    sumas[i] = 0;
+    cin >> A[i];
   }
-  sumas[0] = max(sumas[0], arreglo[0]);
-  int res = 0;
+
+  // La primer posicion va a ser el maximo entre el subarreglo vacio (cuya suma es igual a 0), o el primer 
+  // valor de A
+  sumaMax[0] = max(0, A[0]);
+
+  // Calculamos linealmente todas las posiciones de sumaMax usando la funcion de recurrencia a la vez que 
+  // vamos guardando un maximo local para que al finalizar el recorrido lineal tengamos el maximo absoluto 
+  // y asi poder devolverlo
+  int res = sumaMax[0];
   for(int i = 1; i < N; i++) {
-    sumas[i] = max(sumas[i-1] + arreglo[i], arreglo[i]);
-    if(sumas[i] > res) {
-      res = sumas[i];
+    // Usamos la formulacion recursiva que enunciamos en el informe para calcular la posicion i de sumaMax
+    sumaMax[i] = max(sumaMax[i-1] + A[i], A[i]);
+    if(sumaMax[i] > res) { // Este if se usa para ir guardando los maximos locales
+      res = sumaMax[i];
     }
   }
+
+  // res guarda el maximo absoluto, que hay que devolver
   cout << res << endl;
+
   return 0;
 }
