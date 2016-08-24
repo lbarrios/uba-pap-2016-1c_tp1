@@ -14,9 +14,9 @@ using namespace std;
 
 //Averigua la profundidad de una posicion
 //Root tiene profundidad 0
-//Como todo arbol es un subconjunto de los arboles mas grande, es igual para todos
+//Como todo arbol es un subIntervalo de los arboles mas grande, es igual para todos
 int depth(int posicion){
-    return floor(log2(posicion+1));
+    return floor(log2(posicion));
 }
 
 // Consigue el proximo valor de 2 cuadrado
@@ -32,9 +32,6 @@ int proximoArbolBinario(int sizeArbol){
 // Es decir, que sea n*2 - 1. En caso contrario, devuelve false.
 //
 bool sizeArbolBinario (int sizeArbol){
-    //double valor = log2(sizeArbol+1);
-    //valor -= (int)valor;
-    //return (valor == 0);
     return sizeArbol == proximoArbolBinario(sizeArbol);
 }
 
@@ -54,23 +51,24 @@ int firstLeaf(int sizeArbol){
 bool isLeaf(int sizeArbol, int posicion){
     assert(sizeArbolBinario(sizeArbol));
     assert(inRange(sizeArbol,posicion));
-    //return posicion >= firstLeaf(sizeArbol);
-    return depth(posicion) + 1 == depth(sizeArbol);
+    posicion++;
+    return depth(posicion) == depth(sizeArbol);
 }
 
 // Pregunta si una posicion corresponde a roto
 bool isRoot(int sizeArbol, int posicion){
-  //  assert(sizeArbolBinario(sizeArbol));
     assert(inRange(sizeArbol,posicion));
-    return posicion == 0;
+    posicion++;
+    return posicion == 1;
 }
 
 // Consigue el hijo de la izquierda
 int getLeftChildren(int sizeArbol, int posicion){
-  //  assert(sizeArbolBinario(sizeArbol));
-  //  assert(inRange(sizeArbol,posicion));
     assert(!(isLeaf(sizeArbol,posicion)));
-    return ((posicion+1) * 2)-1;
+    posicion++;
+    int answer = ((posicion) * 2);
+    answer--;
+    return answer;
 };
 
 // Consigue el hijo de la derecha
@@ -78,7 +76,10 @@ int getRightChildren(int sizeArbol, int posicion){
    // assert(sizeArbolBinario(sizeArbol));
     //assert(inRange(sizeArbol,posicion));
     assert(!(isLeaf(sizeArbol,posicion)));
-    return ((posicion+1) * 2);
+    posicion++;
+    int answer = ((posicion) * 2) + 1;
+    answer--;
+    return answer;
 };
 
 // Consigue al padre
@@ -86,26 +87,34 @@ int getFather(int sizeArbol, int posicion){
   //  assert(sizeArbolBinario(sizeArbol));
    // assert(inRange(sizeArbol,posicion));
     assert(!(isRoot(sizeArbol,posicion)));
-    return (posicion/2);
+    posicion++;
+    int answer = (posicion/2);
+    answer--;
+    return answer;
 };
 
-// El domain es el conjunto de nodos hoja que son descendientes del nodo actual.
-// Esta funcion optiene el extremo izquierdo.
-int getConjuntoLeft(int sizeArbol, int posicion){
-    int distanceToLeaves = depth(sizeArbol) - depth(posicion) - 1;
-    return ((posicion +1) * pow(2,distanceToLeaves))-1 - firstLeaf(sizeArbol);
+
+int getLeftmostDescendant(int sizeArbol, int posicion){
+    posicion++;
+    int distanceToLeaves = depth(sizeArbol) - depth(posicion);
+    int answer = ((posicion) * pow(2,distanceToLeaves));
+    answer -= firstLeaf(sizeArbol); //Reacomodo para que el Intervalo empieze de 0
+    answer--;
+    return answer;
 }
 
-// El domain es el conjunto de nodos hoja que son descendientes del nodo actual.
-// Esta funcion optiene el extremo derecho.
-int getConjuntoRight(int sizeArbol, int posicion){
+
+int getRightmostDescendant(int sizeArbol, int posicion){
+    posicion++;
     int answer;// = 0;
-    //if(depth(posicion) == depth(posicion+1))://Si esta a la derecha de todo, el valor mas a su derecha es el final
+    //Si esta a la derecha de todo, el valor mas a su derecha es el final
     if (depth(posicion) != depth(posicion+1)){
-        answer = sizeArbol-1 - firstLeaf(sizeArbol);
+        answer = sizeArbol;
+        answer -= firstLeaf(sizeArbol);
     }else{
-        answer = getConjuntoLeft(sizeArbol, posicion+1) -1;
+        answer = getLeftmostDescendant(sizeArbol, posicion);
     }
+    answer--;
     return answer;
 }
 
@@ -115,18 +124,18 @@ void printArbol(int Arbol[], int sizeArbol, bool showdepth){
     int i = 0;
     //bool showdepth = true;
     cout << "TREE" << endl << "------";
-    for(int posicion = 0; posicion < sizeArbol; posicion++){
+    for(int posicion = 1; posicion < sizeArbol+1; posicion++){
         if(depth(posicion) != actualDepth){
             i = 1;
             actualDepth = depth(posicion);
             cout << endl;
             if(showdepth) cout << "Profundidad : {" << actualDepth << "}" << endl;
         }else{
-            for (int spaces = 0; spaces < pow(2,depth(sizeArbol) - actualDepth) ; ++spaces) cout << " ";
+            for (int spaces = 0; spaces < pow(2,depth(sizeArbol+1) - actualDepth) ; ++spaces) cout << " ";
         }
-        for (int spaces = 0; spaces < (pow(2,depth(sizeArbol) - actualDepth)) -1; ++spaces) cout << " ";
-        //if(depth(posicion) + 1 == depth(sizeArbol) ):
-        cout << "" << Arbol[posicion] <<"";
+
+        for (int spaces = 0; spaces < (pow(2,depth(sizeArbol+1) - actualDepth)) -1; ++spaces) cout << " ";
+        cout << "" << Arbol[posicion-1] <<"";
     }
     cout << endl;
 

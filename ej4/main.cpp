@@ -9,9 +9,14 @@ using namespace std;
 
 int main(int argc , char *argv[])
 {
+    ///    ETAPA 0, ELIJO EL ARCHIVO DE INPUT
+    ///    (ESTO DESPUES HABRIA QUE HACERLO CON EL INPUT DE TERMINAL)
+    ifstream file("inputs/ejemplo3.txt");
+
+
     ///    ETAPA 1, CARGO LOS DATOS
-    ifstream file("inputs/ejemplo3.txt"); string str;
-    int cantidadMatrices; int longitudIntervalo;int longitudArbol;
+    string str;
+    int cantidadMatrices; int longitudIntervalo;int alturaArbol;
     vector<int> inputValues; int value;
     Matriz target; Matriz *inputs; Matriz *Arbol;
     file >> cantidadMatrices;
@@ -36,17 +41,20 @@ int main(int argc , char *argv[])
     }
 
     /// ETAPA 2, CREO EL ARBOL Y LO POBLO CON LA INFORMACION QUE TENEMOS
-    longitudArbol = (proximoCuadrado(cantidadMatrices)*2)-1;
-    Arbol =  new Matriz[longitudArbol];
-    poblarArbol(id(), Arbol, longitudArbol, inputs, cantidadMatrices);
+    alturaArbol = (proximoCuadrado(cantidadMatrices)*2)-1;
+    Arbol =  new Matriz[alturaArbol];
+    poblarArbol(id(), Arbol, alturaArbol, inputs, cantidadMatrices);
 
 
     /// ETAPA 3, PARA TODOS LOS INTERVALOS QUE ESTAN DENTRO DE LOS DATOS QUE SUBIMOS, CALCULAMOS LA MULTIPLICACION Y NOS FIJAMOS SI ES TARGET
     bool found = false;
 
     for(int x=longitudIntervalo; x < cantidadMatrices; x++){
+        int comienzoIntervalo = x-longitudIntervalo;
+        int finintervalo = x;
         found = found or (
-                resolverConjunto(id(),Arbol,longitudArbol,x-longitudIntervalo,x)==target
+                resolverIntervalo(
+                        id(),Arbol,alturaArbol,comienzoIntervalo,finintervalo)==target
                 );
     }
 
@@ -57,6 +65,19 @@ int main(int argc , char *argv[])
 
     delete [] inputs;
     delete [] Arbol;
+
+
+    int a[8] = {1,3,2,1,2,1,0};
+    int b[15] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+    printArbol(b,15,false);
+    poblarArbol(1,b,15,a,8);
+    printArbol(b,15,false);
+
+    //cout <<
+    for(int x=0; x < 15; x++){
+    //cout << "[" << x << "]:" << getLeftmostDescendant(15, x) << "--" << getRightmostDescendant(15, x) << endl;// << endl;
+    }
 
     return 0;
 }
