@@ -6,6 +6,11 @@ ifeq ($(UNAME),FreeBSD)
 	MAKE=gmake
 endif
 
+ifeq ($(UNAME),Linux)
+	CC=g++
+	MAKE=gmake
+endif
+
 ifeq ($(MAKE),)
 	MAKE=make
 endif
