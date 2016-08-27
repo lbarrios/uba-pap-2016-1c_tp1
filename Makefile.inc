@@ -8,7 +8,7 @@ endif
 
 ifeq ($(UNAME),Linux)
 	CC=g++
-	MAKE=gmake
+	MAKE=make
 endif
 
 ifeq ($(MAKE),)
@@ -40,7 +40,7 @@ ifeq ($(EXE),)
 endif
 
 # Default targets
-.PHONY: all clean
+.PHONY: all clean tests
 all: $(EXE)
 
 $(EXE): $(EXE).cpp
@@ -48,3 +48,6 @@ $(EXE): $(EXE).cpp
 
 clean:
 	rm -f $(EXE)
+
+tests:
+	./run_tests.sh
