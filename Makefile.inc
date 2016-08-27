@@ -45,9 +45,10 @@ all: $(EXE)
 
 $(EXE): $(EXE).cpp
 	$(CC) $(CFLAGS) -o $(EXE) $(EXE).cpp
+	$(MAKE) tests
 
 clean:
 	rm -f $(EXE)
 
-tests:
-	./run_tests.sh
+tests: $(EXE)
+	@./run_tests.sh
