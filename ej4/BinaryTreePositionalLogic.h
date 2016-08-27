@@ -38,108 +38,72 @@ bool sizeArbolBinario (int sizeArbol){
 // Se asegura que la posicion no sea mas grande que el tamanio del arbol.
 bool inRange(int sizeArbol, int posicion){
     assert(sizeArbolBinario(sizeArbol));
-    return posicion < sizeArbol;
+    return (posicion > 0) and (posicion <= sizeArbol);
 }
 
 //  Consigue el primer elemento que es una hoja
 int firstLeaf(int sizeArbol){
     assert(sizeArbolBinario(sizeArbol));
-    return floor(sizeArbol/2);
+    int answer = floor(sizeArbol/2) + 1;
+    return answer;
+}
+
+int posicionAsLeaf(int sizeArbol, int posicion){
+    assert(inRange(sizeArbol,posicion));
+    return posicion - firstLeaf(sizeArbol);
 }
 
 // Pregunta si una posicion corresponde a una hoja.
 bool isLeaf(int sizeArbol, int posicion){
     assert(sizeArbolBinario(sizeArbol));
     assert(inRange(sizeArbol,posicion));
-    posicion++;
     return depth(posicion) == depth(sizeArbol);
 }
 
 // Pregunta si una posicion corresponde a roto
 bool isRoot(int sizeArbol, int posicion){
     assert(inRange(sizeArbol,posicion));
-    posicion++;
     return posicion == 1;
 }
 
 // Consigue el hijo de la izquierda
 int getLeftChildren(int sizeArbol, int posicion){
     assert(!(isLeaf(sizeArbol,posicion)));
-    posicion++;
     int answer = ((posicion) * 2);
-    answer--;
     return answer;
 };
 
 // Consigue el hijo de la derecha
 int getRightChildren(int sizeArbol, int posicion){
-   // assert(sizeArbolBinario(sizeArbol));
-    //assert(inRange(sizeArbol,posicion));
     assert(!(isLeaf(sizeArbol,posicion)));
-    posicion++;
     int answer = ((posicion) * 2) + 1;
-    answer--;
     return answer;
 };
 
 // Consigue al padre
 int getFather(int sizeArbol, int posicion){
-  //  assert(sizeArbolBinario(sizeArbol));
-   // assert(inRange(sizeArbol,posicion));
     assert(!(isRoot(sizeArbol,posicion)));
-    posicion++;
     int answer = (posicion/2);
-    answer--;
     return answer;
 };
 
 
-int getLeftmostDescendant(int sizeArbol, int posicion){
-    posicion++;
+int comienzoIntervaloDescendientes(int sizeArbol, int posicion){
     int distanceToLeaves = depth(sizeArbol) - depth(posicion);
-    int answer = ((posicion) * pow(2,distanceToLeaves));
-    answer -= firstLeaf(sizeArbol); //Reacomodo para que el Intervalo empieze de 0
-    answer--;
+    int posicionAnswer = ((posicion) * pow(2,distanceToLeaves));
+    int answer = posicionAsLeaf(sizeArbol,posicionAnswer); //Reacomodo para que el Intervalo empieze de 0
     return answer;
 }
 
 
-int getRightmostDescendant(int sizeArbol, int posicion){
-    posicion++;
-    int answer;// = 0;
-    //Si esta a la derecha de todo, el valor mas a su derecha es el final
-    if (depth(posicion) != depth(posicion+1)){
-        answer = sizeArbol;
-        answer -= firstLeaf(sizeArbol);
-    }else{
-        answer = getLeftmostDescendant(sizeArbol, posicion);
-    }
-    answer--;
+int finalIntervaloDescendientes(int sizeArbol, int posicion){
+    int distanceToLeaves = depth(sizeArbol) - depth(posicion);
+    int ammountOfDescendants = pow(2,distanceToLeaves);
+    int distanceRightmostFromLeftmost = ammountOfDescendants;
+
+    int answer = comienzoIntervaloDescendientes(sizeArbol, posicion) + distanceRightmostFromLeftmost;
+
     return answer;
-}
-
-void printArbol(int Arbol[], int sizeArbol, bool showdepth){
-    int actualDepth = -1;
-    int unidadBasica = 3;
-    int i = 0;
-    //bool showdepth = true;
-    cout << "TREE" << endl << "------";
-    for(int posicion = 1; posicion < sizeArbol+1; posicion++){
-        if(depth(posicion) != actualDepth){
-            i = 1;
-            actualDepth = depth(posicion);
-            cout << endl;
-            if(showdepth) cout << "Profundidad : {" << actualDepth << "}" << endl;
-        }else{
-            for (int spaces = 0; spaces < pow(2,depth(sizeArbol+1) - actualDepth) ; ++spaces) cout << " ";
-        }
-
-        for (int spaces = 0; spaces < (pow(2,depth(sizeArbol+1) - actualDepth)) -1; ++spaces) cout << " ";
-        cout << "" << Arbol[posicion-1] <<"";
-    }
-    cout << endl;
-
-
 }
 
 
