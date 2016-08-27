@@ -65,6 +65,6 @@ int main(int argc, char const *argv[]){
       cin >> amistades[i][j];
     }
   }
-  cout << maximaDiversion(cantidad_de_conjuntos_posibles-1, &amistades, &CALCULADA_MAXIMA_DIVERSION, &MAXIMA_DIVERSION, n);
+  cout << maximaDiversion(cantidad_de_conjuntos_posibles-1, &amistades, &CALCULADA_MAXIMA_DIVERSION, &MAXIMA_DIVERSION, n) << endl;
   return 0;
 }
