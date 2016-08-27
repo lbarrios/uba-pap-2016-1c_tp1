@@ -5,8 +5,7 @@
 
 using namespace std;
 
-//Devuelve la diversion que aporta la fiesta representada por el subconjunto
-//representado por el binario que representa al entero C. 
+//Devuelve la diversion que aporta el subconjunto representado por el binario del entero c. 
 int diversion(int c, int n, vector<vector<int> >* amistades){
   int res = 0;
   for(int i = 0; i<n; i++){
@@ -26,46 +25,46 @@ int diversion(int c, int n, vector<vector<int> >* amistades){
 }
 
 
+//Devuelve la diversion maxima que puede aportar el subconjunto s, mirando
+//todos sus subconjuntos y sus combinaciones
+int maximaDiversion(int s, vector<vector<int> >* amistades, vector<bool>* CALCULADA_MAXIMA_DIVERSION, vector<int>* MAXIMA_DIVERSION, int n){
+  //Si el resultado ya fue calculado lo devuelvo
+  if((*CALCULADA_MAXIMA_DIVERSION)[s]) return (*MAXIMA_DIVERSION)[s];
+  //Si llegue al caso base en el cual el numero binario s es 0, devuelvo 0,
+  //pues no suma diversion
+  if(s == 0) return 0;
+  int maximaDiversionPosible = INT_MIN;
+  int complemento, diversion_actual;
+  int mascara_de_unos = pow(2,n) - 1;
+  for(int i = s; i != 0; i = s & (i-1)){ //Recorro todos los posibles subconjuntos de s
+    //Calculo el conjunto complemento de i
+    complemento = (i^mascara_de_unos) & s;
+    //Calculo la diversion que aporta el subconjunto y la de su complemento
+    diversion_actual = diversion(i, n, amistades) + maximaDiversion(complemento, amistades, CALCULADA_MAXIMA_DIVERSION, MAXIMA_DIVERSION, n);
+    //Actualizo la maxima diversion hasta el momento
+    maximaDiversionPosible = (diversion_actual > maximaDiversionPosible) ? diversion_actual : maximaDiversionPosible;
+  }
+  //Actualizo el arreglo dinamico con lo que acabo de calcular
+  (*CALCULADA_MAXIMA_DIVERSION)[s] = true;
+  (*MAXIMA_DIVERSION)[s] = maximaDiversionPosible;
+  return maximaDiversionPosible;
+}
+
+
+
+
 int main(int argc, char const *argv[]){
   int n;
   cin >> n;
+  int cantidad_de_conjuntos_posibles = pow(2,n);
+  vector<bool> CALCULADA_MAXIMA_DIVERSION(cantidad_de_conjuntos_posibles, false);
+  vector<int> MAXIMA_DIVERSION(cantidad_de_conjuntos_posibles, INT_MIN); //Guardo la maxima diversion que puede aportar cada subconjunto
   vector<vector<int> > amistades(n, vector<int>(n));
-  //Parseo la matriz de amistades entre las amigas
   for(int i = 0; i < n; i++){
     for(int j = 0; j < n; j++){
       cin >> amistades[i][j];
     }
   }
-  int res = 0; 
-  //En res guardo el resultado total de diversion
-  int original = pow(2,n) - 1; 
-  //En original guardo la configuracion original(en bits) del arreglo de amigas, la cual comienza con todos los bits en 1.
-  //Cada bit representa si la amiga Ai esta en el subconjunto o no
-  int conj_actual = original;
-  //En conj_actual guardo el conjunto candidato para una fiesta(inicialmente es una fiesta con todas las amigas)
-  while(original != 0){ //Itero hasta no tener mas subconjuntos para analizar, es decir que todos los bits son cero
-    int div_actual = INT_MIN;
-    //En div_actual guardo la diversion actual que aporta el conjunto candidato
-    //que estoy recorriendo
-    for(int i = original; i!=0; i = original & (i-1)){ //Recorro todos los posibles subconjuntos del original para analizar la diversion que aporta
-      int div_candidata = diversion(i, n, &amistades);
-      //Calculo la diversion que tiene este subconjunto
-      if((div_candidata > div_actual) || ((div_candidata == div_actual) && (i < conj_actual))){
-        //Si la diversion que aporta este subconjunto es mayor a la anterior o
-        //si las diversiones son iguales, pero arme un grupo con menos
-        //personas, me guardo la diversion que aporta y el numero que representa a ese
-        //subconjunto
-        div_actual = div_candidata;
-        conj_actual = i;
-      }
-    }
-    //Al terminar el ciclo, tengo en conj_actual el conjunto que mas diversion
-    //aporta, asi que debo sacarlo del conjunto original para seguir armando
-    //conjuntos con las personas que quedan. Limpio los bits con un XOR
-    original = original^conj_actual;
-    //Actualizo la diversion acumulada
-    res += div_actual;
-  }
-  cout << res;
+  cout << maximaDiversion(cantidad_de_conjuntos_posibles-1, &amistades, &CALCULADA_MAXIMA_DIVERSION, &MAXIMA_DIVERSION, n);
   return 0;
 }
