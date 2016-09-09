@@ -2,12 +2,14 @@
 UNAME:=$(shell uname)
 
 ifeq ($(UNAME),FreeBSD)
-	CC=g++6
+	CXX=g++6
 	MAKE=gmake
 endif
 
 ifeq ($(UNAME),Linux)
-	CC=g++
+	ifeq ($(CXX),)
+		CXX=g++
+	endif
 	MAKE=make
 endif
 
@@ -15,19 +17,29 @@ ifeq ($(MAKE),)
 	MAKE=make
 endif
 
-ifeq ($(CC),)
-	CC=g++
+ifeq ($(CXX),)
+	CXX=g++
 endif
 
-ifeq ($(CC),g++-4.6)
+C11_FLAG=c++11
+C14_FLAG=c++14
+
+ifeq ($(CXX),g++-4.6)
 	C11_FLAG=c++0x
-	C14_FLAG=c++0y
-else
-	C11_FLAG=c++11
-	C14_FLAG=c++14
+	C14_FLAG=c++0x
 endif
 
-#CC=g++ # setear CC manualmente con "setenv CC ..."
+ifeq ($(CXX),g++-4.7)
+	C11_FLAG=c++0x
+	C14_FLAG=c++0x
+endif
+
+ifeq ($(CXX),g++-4.8)
+	C11_FLAG=c++0x
+	C14_FLAG=c++0x
+endif
+
+#CXX=g++ # setear CXX manualmente con "setenv CXX ..."
 #-Wall: All Warnings
 #-pedantic: pedantic warnings
 #-std=...: set C standard to:...
@@ -44,7 +56,7 @@ endif
 all: $(EXE)
 
 $(EXE): $(EXE).cpp
-	$(CC) $(CFLAGS) -o $(EXE) $(EXE).cpp
+	$(CXX) $(CFLAGS) -o $(EXE) $(EXE).cpp
 	$(MAKE) tests
 
 clean:
