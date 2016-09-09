@@ -71,21 +71,21 @@ int getLeftChildren(int sizeArbol, int posicion){
     assert(!(isLeaf(sizeArbol,posicion)));
     int answer = ((posicion) * 2);
     return answer;
-};
+}
 
 // Consigue el hijo de la derecha
 int getRightChildren(int sizeArbol, int posicion){
     assert(!(isLeaf(sizeArbol,posicion)));
     int answer = ((posicion) * 2) + 1;
     return answer;
-};
+}
 
 // Consigue al padre
 int getFather(int sizeArbol, int posicion){
     assert(!(isRoot(sizeArbol,posicion)));
     int answer = (posicion/2);
     return answer;
-};
+}
 
 
 int comienzoIntervaloDescendientes(int sizeArbol, int posicion){

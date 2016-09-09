@@ -103,13 +103,13 @@ T resolverIntervalo(T neutro, T Arbol[], int sizeArbol, int startIntervalo, int 
 
 void printArbol(int Arbol[], int sizeArbol, bool showdepth){
     int actualDepth = -1;
-    int unidadBasica = 3;
-    int i = 0;
+    //int unidadBasica = 3;
+    //int i = 0;
     //bool showdepth = true;
     cout << "TREE" << endl << "------";
     for(int posicion = 1; posicion < sizeArbol+1; posicion++){
         if(depth(posicion) != actualDepth){
-            i = 1;
+            //i = 1;
             actualDepth = depth(posicion);
             cout << endl;
             if(showdepth) cout << "Profundidad : {" << actualDepth << "}" << endl;

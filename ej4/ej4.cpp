@@ -4,7 +4,7 @@
 #include "BinaryTreePositionalLogic.h"
 #include "BinaryTreeManipulation.h"
 #include "IntervalLogic.h"
-#include "..\catedra\libs\Matriz.h"
+#include "../catedra/libs/Matriz.h"
 
 using namespace std;
 
