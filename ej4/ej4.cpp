@@ -1,80 +1,58 @@
 #include <iostream>
-#include "../catedra/libs/Matriz.h"
+#include <assert.h>
+#include <math.h>
+#include "BinaryTreePositionalLogic.h"
+#include "BinaryTreeManipulation.h"
+#include "IntervalLogic.h"
+#include "..\catedra\libs\Matriz.h"
 
 using namespace std;
 
-bool aux(Matriz M, Matriz arreglo[], int N, int L, int inicio, int fin) {
-  if(fin-inicio <= L) {
-    //ad hoc
-    //multiplicar las L matrices, agregando por izquierda o por derecha sea cual fuese el caso
-    int diferencia = L-(fin-inicio); //cuantas posiciones me faltan para llegar a L
-    while(inicio >= 0 && diferencia > 0) {
-      inicio--;
-      diferencia--;
-    }
-    if(diferencia > 0) {
-      while(fin <= N && diferencia > 0) {
-        fin++;
-        diferencia--;
-      }
-    }
-    if(diferencia > 0) return false;
-    //se llego a L con inicio y fin (hay q comprobar que fin-inicio = L
-    Matriz producto = id();
-    for(int i = inicio; i < fin; i++) {
-      producto = producto * arreglo[i];
-    }
-    return (producto == M);
-  } else { //dividir y combinar
-    int medio = (inicio+fin)/2;
-    bool izq = aux(M, arreglo, N, L, inicio, medio);
-    bool der = aux(M, arreglo, N, L, medio, fin);
-    if(izq || der) { // si alguno dio true, significa que existe el subarreglo
-      return true;
-    } else { //sino, falta todavía ver el medio
-      inicio = medio - L;
-      if(inicio < 0) inicio = 0;
-      fin = medio + L;
-      if(fin > N) fin = N;
-      bool res = false;
-      for(int i = inicio; i < fin+1-L; i++) { // veo todas las opciones que pasen por el medio, el tema es que no se si esto es N^2 ....
-        Matriz producto = id();
-        for(int j = i; j < i+L; j++) {
-          producto = producto*arreglo[j];
-        }
-        if(producto == M) {
-          res = true;
-        }
-      }
-      return res;
-    }
-  }
-}
+int main(int argc , char *argv[])
+{
+    ///    ETAPA 1,
+    /// CARGO LOS DATOS
+    string str;
+    int cantidadMatrices; int longitudIntervalo;int alturaArbol;
+    Matriz target; Matriz *inputs; Matriz *Arbol;
 
-int main(int argc, char const *argv[]) {
-  int N;
-  cin >> N;
-  int L;
-  cin >> L;
-  vector<int> vectorM(9);
-  Matriz arreglo[N];
-  for(int i = 0; i < 9; i++) {
-    cin >> vectorM[i];
-  }
-  Matriz M = Matriz(vectorM);
-  for(int i = 0; i < N; i++) {
-    vector<int> matrizAux(9);
-    for(int j = 0; j < 9; j++) {
-      cin >> matrizAux[j];
+    cin >> cantidadMatrices;
+    cin >> longitudIntervalo;
+    cin >>target;
+
+    inputs = new Matriz[cantidadMatrices];
+    for(int x=0; x < cantidadMatrices; x++) cin >> inputs[x];
+
+    /// ETAPA 2,
+    /// CREO EL ARBOL Y LO POBLO CON LA INFORMACION QUE TENEMOS
+    alturaArbol = (proximoCuadrado(cantidadMatrices)*2)-1;
+    Arbol =  new Matriz[alturaArbol];
+    poblarArbol(id(), Arbol, alturaArbol, inputs, cantidadMatrices);
+
+
+    /// ETAPA 3,
+    /// PARA TODOS LOS INTERVALOS QUE ESTAN DENTRO DE LOS DATOS QUE SUBIMOS,
+    /// CALCULAMOS LA MULTIPLICACION Y NOS FIJAMOS SI ES TARGET
+    bool found = false;
+
+    for(int x=longitudIntervalo; x <= cantidadMatrices; x++){
+        int comienzoIntervalo = x-longitudIntervalo;
+        int finintervalo = x;
+        Matriz respuestaMultiplicarIntervalo = resolverIntervalo(id(),Arbol,alturaArbol,comienzoIntervalo,finintervalo);
+        found = found or (respuestaMultiplicarIntervalo==target);
     }
-    arreglo[i] = Matriz(matrizAux);
-  }
-  
-  if(aux(M, arreglo, N, L, 0, N)) {
-    cout << "SI" << endl;
-  } else {
-    cout << "NO" << endl;
-  }
-  
-  return 0;
+
+    /// ETAPA 4,
+    /// RETURN RESULTS
+    /// ???
+    /// PROFIT
+
+    if(found) cout << "SI" << endl;
+    if(!found) cout << "NO" << endl;
+
+    delete [] inputs;
+    delete [] Arbol;
+
+
+    return 0;
 }

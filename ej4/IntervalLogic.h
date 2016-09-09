@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+//Verifica que los intervalos coincidan
 bool intervalsMeet(int x1, int x2, int y1, int y2){
     assert(x1 < x2);
     assert(y1 < y2);
@@ -18,6 +19,7 @@ bool intervalsMeet(int x1, int x2, int y1, int y2){
     return distanceBetweenStarts < lengthFirstInterval;
 }
 
+//Verifica que un intervalo contenga al otro
 bool intervalContains(int x1,int x2, int y1, int y2){
     bool ladoIzquierdoEsta = y1 >= x1;
     bool ladoDerechoEsta =  y2 <= x2;
